@@ -23,5 +23,19 @@ def home():
 def football():
     return render_template('football.html')
 
+@app.route('/signup', methods = ['GET', 'POST'])
+def signup():
+    if request.method == 'GET':
+        message = 'Please sign up!'
+        return render_template('signup.html', message = message)
+    else:
+        username = request.form['username']
+        password = request.form['password']
+        favorite_color = request.form['favorite_color']
+        message = model.signup(username, password, favorite_color)
+        return render_template('signup.html', message = message)
+
+
+
 if __name__ == '__main__':
     app.run(port = 7000, debug = True)
