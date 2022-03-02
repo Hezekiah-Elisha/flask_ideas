@@ -10,8 +10,10 @@ def home():
     else:
         username = request.form['username']
         password = request.form['password']
-        if username == 'Hezekiah' and password == 'elisha':
-            message = model.show_color('Hezekiah')
+        db_password = model.check_pw(username)
+
+        if password == db_password:
+            message = model.show_color(username)
             return render_template('football.html', message = message)
         else:
             error_message = 'Hint: He curses a lot'
