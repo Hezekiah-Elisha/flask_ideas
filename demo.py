@@ -35,15 +35,22 @@ def home():
 def login():
     if request.method == 'POST':
         session.pop('username', None)
-        areyouuser = rrequest.form['username']
+        areyouuser = request.form['username']
         pwd = model.check_pw(areyouuser)
         if request.form['password'] == pwd:
             session['username'] = request.form['username']
             return redirect(url_for('home'))
+    return render_template('index.html')
 
-@app.route('/football', methods = ['GET'])
+@app.before_request
+def before_request():
+    g.username = None
+    if 'username' in session:
+        g.username = session['username']
+
+"""@app.route('/football', methods = ['GET'])
 def football():
-    return render_template('football.html')
+    return render_template('football.html')"""
 
 @app.route('/signup', methods = ['GET', 'POST'])
 def signup():
@@ -57,7 +64,16 @@ def signup():
         message = model.signup(username, password, favorite_color)
         return render_template('signup.html', message = message)
 
+@app.route('/getsession')
+def getsession():
+    if 'username' in session:
+        return session['username']
+    return redirect(url_for('login'))
 
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(port = 7000, debug = True)
